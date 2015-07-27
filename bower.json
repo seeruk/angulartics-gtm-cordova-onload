@@ -1,0 +1,27 @@
+{
+  "name": "angulartics-gtm-cordova-onload",
+  "version": "0.0.1",
+  "homepage": "https://github.com/SeerUK/angulartics-gtm-cordova-onload",
+  "authors": [
+    "Elliot Wright <wright.elliot@gmail.com>"
+  ],
+  "description": "An alternative version of the GTM Cordova Angulartics module that also tracks the first screen when the app loads.",
+  "main": "src/angulartics-gtm-cordova.js",
+  "keywords": [
+    "angular",
+    "angulartics",
+    "analytics",
+    "gtm",
+    "tag",
+    "manager",
+    "google"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
