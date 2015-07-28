@@ -11,6 +11,7 @@
 /**
  * @ngdoc overview
  * @name seeruk.angulartics.google.tagmanager.cordova
+ * @description
  * Enables analytics support for Google Tag Manager (http://google.com/tagmanager)
  * for Cordova plugin Tag Manager (http://plugins.cordova.io/#/package/com.jareddickson.cordova.tag-manager)
  */
@@ -90,10 +91,10 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
             }
         };
     })
-    .config(function($analyticsProvider, $locationProvider, googleTagManagerCordovaProvider) {
+    .config(function($analyticsProvider, googleTagManagerCordovaProvider) {
         googleTagManagerCordovaProvider.ready(function (analytics, success, failure) {
             // Track the page we're on when the module loads
-            analytics.trackPage(success, failure, $locationProvider.$get().path());
+            analytics.trackPage(success, failure, window.location.hash.slice(1));
 
             $analyticsProvider.registerPageTrack(function (path) {
                 analytics.trackPage(success, failure, path);
