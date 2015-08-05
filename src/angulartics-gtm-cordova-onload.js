@@ -18,14 +18,14 @@
 angular.module("seeruk.angulartics.google.tagmanager.cordova", [
     "angulartics"
 ])
-    .provider("googleTagManagerCordova", function () {
+    .provider("googleTagManagerCordova", function() {
         "use strict";
 
-        var GoogleTagManagerCordova = function ($q, $log, ready, debug, trackingId, period) {
+        var GoogleTagManagerCordova = function($q, $log, ready, debug, trackingId, period) {
             var deferred = $q.defer();
             var deviceReady = false;
 
-            document.addEventListener("deviceReady", function () {
+            document.addEventListener("deviceReady", function() {
                 deviceReady = true;
                 deferred.resolve();
             }, false);
@@ -45,7 +45,7 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
                 }
             }, false);
 
-            setTimeout(function () {
+            setTimeout(function() {
                 if (!deviceReady) {
                     deferred.resolve();
                 }
@@ -63,8 +63,8 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
                 }
             }
 
-            this.init = function () {
-                return deferred.promise.then(function () {
+            this.init = function() {
+                return deferred.promise.then(function() {
                     var analytics = window.plugins && window.plugins.TagManager;
                     if (analytics) {
                         analytics.init(function onInit() {
@@ -78,7 +78,7 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
         };
 
         return {
-            $get: function ($injector) {
+            $get: function($injector) {
                 return $injector.instantiate(GoogleTagManagerCordova, {
                     ready: this._ready || angular.noop,
                     debug: this.debug,
@@ -86,23 +86,33 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
                     period: this.period
                 });
             },
-            ready: function (fn) {
+            ready: function(fn) {
                 this._ready = fn;
             }
         };
     })
     .config(function($analyticsProvider, googleTagManagerCordovaProvider) {
-        googleTagManagerCordovaProvider.ready(function (analytics, success, failure) {
-            // Track the page we're on when the module loads
-            analytics.trackPage(success, failure, window.location.hash.slice(1));
+        googleTagManagerCordovaProvider.ready(function(analytics, success, failure) {
+            $analyticsProvider.registerPageTrack(function(path) {
+                var username = googleTagManagerCordovaProvider.username;
 
-            $analyticsProvider.registerPageTrack(function (path) {
-                analytics.trackPage(success, failure, path);
+                if (username) {
+                    analytics.trackPage(success, failure, path, username);
+                } else {
+                    analytics.trackPage(success, failure, path);
+                }
             });
 
-            $analyticsProvider.registerEventTrack(function (action, properties) {
+            $analyticsProvider.registerEventTrack(function(action, properties) {
                 analytics.trackEvent(success, failure, properties.category, action, properties.label, properties.value);
             });
+
+            // Track the page we're on when the module loads
+            analytics.trackPage(success, failure, window.location.hash.slice(1));
+        });
+
+        $analyticsProvider.registerSetUsername(function(username) {
+            googleTagManagerCordovaProvider.username = username;
         });
     })
     .run(function(googleTagManagerCordova) {
