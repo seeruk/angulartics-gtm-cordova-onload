@@ -104,7 +104,19 @@ angular.module("seeruk.angulartics.google.tagmanager.cordova", [
             });
 
             $analyticsProvider.registerEventTrack(function(action, properties) {
-                analytics.trackEvent(success, failure, properties.category, action, properties.label, properties.value);
+                var username = googleTagManagerCordovaProvider.username;
+
+                if (username) {
+                    analytics.trackEvent(
+                        success, failure, properties.category, action,
+                        properties.label, properties.value, username
+                    );
+                } else {
+                    analytics.trackEvent(
+                        success, failure, properties.category, action,
+                        properties.label, properties.value
+                    );
+                }
             });
 
             // Track the page we're on when the module loads
